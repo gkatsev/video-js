@@ -57,7 +57,7 @@ var sourceFiles = [
   "src/js/tracks/caption-settings.js",
   "src/js/json.js",
   "src/js/setup.js",
-  "src/js/plugins.js",
+  "src/js/plugins.js"
 ];
 
 // Allow overriding the default project root
