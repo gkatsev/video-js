@@ -1,3 +1,5 @@
+(function() {
+  var createTrackHelper;
 /**
  * @fileoverview Media Technology Controller - Base class for media playback
  * technology controllers like Flash and HTML5
@@ -12,7 +14,7 @@
 vjs.MediaTechController = vjs.Component.extend({
   /** @constructor */
   init: function(player, options, ready){
-    var textTracksChanges;
+    var textTrackListChanges, textTracksChanges, textTrackDisplay, processCues, script;
 
     options = options || {};
     // we don't want the tech to report user activity automatically.
@@ -33,22 +35,62 @@ vjs.MediaTechController = vjs.Component.extend({
     this.initControlsListeners();
 
     if (!this['featuresTextTracks']) {
-      player.addChild('textTrackDisplay');
-    } else {
-      textTracksChanges = function() {
-        var controlBar = player.getChild('controlBar');
-        if (!controlBar) {
-          return;
-        }
+      textTrackDisplay = player.addChild('textTrackDisplay');
 
-        controlBar.getChild('subtitlesButton').update();
-        controlBar.getChild('captionsButton').update();
-        controlBar.getChild('chaptersButton').update();
+      if (!window.WebVTT) {
+        script = document.createElement('script');
+        script.src = player.options()['vtt.js'] || '../node_modules/vtt.js/dist/vtt.js';
+        player.el().appendChild(script);
+        window.WebVTT = true;
+      }
+
+      processCues = (function(trackDisplay) {
+        return function() {
+          var cues = [],
+              i = 0;
+
+          for (; i < this.activeCues.length; i++) {
+            cues.push(this.activeCues[i]);
+          }
+
+          window.WebVTT.processCues(window, cues, trackDisplay);
+        };
+      })(textTrackDisplay.el());
+
+      textTracksChanges = function() {
+        var i, track;
+
+        window.WebVTT.processCues(window, [], textTrackDisplay.el());
+        for (i = 0; i < this.length; i++) {
+          track = this[i];
+          track.removeEventListener('cuechange', vjs.bind(track, processCues));
+          if (track.mode === 'showing') {
+            track.addEventListener('cuechange', vjs.bind(track, processCues));
+          }
+        }
       };
 
-      this.textTracks().addEventListener('removetrack', textTracksChanges);
-      this.textTracks().addEventListener('addtrack', textTracksChanges);
+      this.textTracks().addEventListener('change', textTracksChanges);
     }
+
+    textTrackListChanges = function() {
+      var controlBar = player.getChild('controlBar');
+      if (!controlBar) {
+        return;
+      }
+
+      controlBar.getChild('subtitlesButton').update();
+      controlBar.getChild('captionsButton').update();
+      controlBar.getChild('chaptersButton').update();
+    };
+
+    this.textTracks().addEventListener('removetrack', textTrackListChanges);
+    this.textTracks().addEventListener('addtrack', textTrackListChanges);
+    this.on('dispose', vjs.bind(this, function() {
+      this.textTracks().removeEventListener('removetrack', textTrackListChanges);
+      this.textTracks().removeEventListener('addtrack', textTrackListChanges);
+      this.textTracks().removeEventListener('change', textTracksChanges);
+    }));
   }
 });
 
@@ -285,43 +327,53 @@ vjs.MediaTechController.prototype.setCurrentTime = function() {
 vjs.MediaTechController.prototype.textTracks_;
 
 vjs.MediaTechController.prototype.textTracks = function() {
-  this.textTracks_ = this.textTracks_ || [];
+  this.textTracks_ = this.textTracks_ || new vjs.TextTrackList();
   return this.textTracks_;
 };
 
-vjs.MediaTechController.prototype.addTextTrack = function(kind, label, language, options) {
-  var tracks = this.textTracks();
-  options = options || {};
+vjs.MediaTechController.prototype.remoteTextTracks = function() {
+  this.remoteTextTracks_ = this.remoteTextTracks_ || new vjs.TextTrackList();
+  return this.remoteTextTracks_;
+};
 
-  options['kind'] = kind;
-  options['label'] = label;
-  options['language'] = language;
-
-  // HTML5 Spec says default to subtitles.
-  // Uppercase first letter to match class names
-  var Kind = vjs.capitalize(kind || 'subtitles');
-
-  // Create correct texttrack class. CaptionsTrack, etc.
-  var track = new window['videojs'][Kind + 'Track'](this.player_, options);
-
-  tracks.push(track);
-
-  // If track.dflt() is set, start showing immediately
-  // TODO: Add a process to deterime the best track to show for the specific kind
-  // Incase there are mulitple defaulted tracks of the same kind
-  // Or the user has a set preference of a specific language that should override the default
-  // Note: The setTimeout is a workaround because with the html5 tech, the player is 'ready'
-  // before it's child components (including the textTrackDisplay) have finished loading.
-  if (track.dflt()) {
-    this.ready(function(){
-      setTimeout(function(){
-        track.player().showTextTrack(track.id());
-      }, 0);
-    });
+createTrackHelper = function(self, kind, label, language, options) {
+  if (!kind) {
+    throw new Error('TextTrack kind is required but was not provided');
   }
 
+  var tracks = self.textTracks(),
+      track;
+
+  options = options || {};
+
+  options.kind = kind;
+  if (label) {
+    options.label = label;
+  }
+  if (language) {
+    options.language = language;
+  }
+  options.player = self.player_;
+
+  track = new vjs.TextTrack(options);
+  tracks.addTrack_(track);
+
   return track;
-}
+};
+
+vjs.MediaTechController.prototype.addTextTrack = function(kind, label, language) {
+  return createTrackHelper(this, kind, label, language);
+};
+
+vjs.MediaTechController.prototype.addRemoteTextTrack = function(options) {
+  var track = createTrackHelper(this, options.kind, options.label, options.language, options);
+  this.remoteTextTracks().addTrack_(track);
+  return track;
+};
+
+vjs.MediaTechController.prototype.removeRemoteTextTrack = function(track) {
+  this.remoteTextTracks().removeTrack_(track);
+};
 
 /**
  * Provide a default setPoster method for techs
@@ -342,7 +394,7 @@ vjs.MediaTechController.prototype['featuresPlaybackRate'] = false;
 vjs.MediaTechController.prototype['featuresProgressEvents'] = false;
 vjs.MediaTechController.prototype['featuresTimeupdateEvents'] = false;
 
-vjs.MediaTechController.prototype['featuresTextTracks'] = false;
+vjs.MediaTechController.prototype['featuresNativeTracks'] = false;
 
 /**
  * A functional mixin for techs that want to use the Source Handler pattern.
@@ -446,3 +498,5 @@ vjs.MediaTechController.withSourceHandlers = function(Tech){
 };
 
 vjs.media = {};
+
+})();

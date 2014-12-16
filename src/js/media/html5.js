@@ -330,14 +330,72 @@ vjs.Html5.prototype.textTracks = function() {
   }
 
   return this.el_.textTracks;
-}
-vjs.Html5.prototype.addTextTrack = function(kind, label, language, options) {
+};
+vjs.Html5.prototype.addTextTrack = function(kind, label, language) {
   if (!this['featuresTextTracks']) {
-    return vjs.MediaTechController.prototype.addTextTrack.call(this, kind, label, language, options);
+    return vjs.MediaTechController.prototype.addTextTrack.call(this, kind, label, language);
   }
 
   return this.el_.addTextTrack(kind, label, language);
-}
+};
+
+vjs.Html5.prototype.addRemoteTextTrack = function(options) {
+  if (!this['featuresTextTracks']) {
+    return vjs.MediaTechController.prototype.addRemoteTextTrack.call(this, options);
+  }
+
+  var track = document.createElement('track');
+  options = options || {};
+
+  if (options.kind) {
+    track.kind = options.kind;
+  }
+  if (options.label) {
+    track.label = options.label;
+  }
+  if (options.language) {
+    track.language = options.language;
+  }
+  if (options['default']) {
+    track['default'] = options['default'];
+  }
+  if (options.id) {
+    track.id = options.id;
+  }
+  if (options.src) {
+    track.src = options.src;
+  }
+
+  this.el().appendChild(track);
+
+  //TODO how to we get rid of this setTimeout?
+  setTimeout(function() {
+    track.track.mode = 'disabled';
+  }, 0);
+
+  this.remoteTextTracks().addTrack_(track.track);
+
+  return track.track;
+};
+
+vjs.Html5.prototype.removeRemoteTextTrack = function(track) {
+  if (!this['featuresTextTracks']) {
+    return vjs.MediaTechController.prototype.removeRemoteTextTrack.call(this, track);
+  }
+
+  var tracks, i;
+
+  this.remoteTextTracks().removeTrack_(track);
+
+  tracks = this.el().querySelectorAll('track');
+
+  for (i = 0; i < tracks.length; i++) {
+    if (tracks[i].track === track) {
+      tracks[i].parentNode.removeChild(tracks[i]);
+      break;
+    }
+  }
+};
 
 /* HTML5 Support Testing ---------------------------------------------------- */
 
