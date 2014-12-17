@@ -8,19 +8,19 @@
 
       this.fontSize = 12;
 
-      vjs.on(this.el().querySelector('.done-button'), 'click', vjs.bind(this, function() {
+      vjs.on(this.el().querySelector('.vjs-done-button'), 'click', vjs.bind(this, function() {
         this.hide();
       }));
 
-      vjs.on(this.el().querySelector('.default-button'), 'click', vjs.bind(this, function() {
-        this.el().querySelector('.fg-color > select').selectedIndex = 0;
-        this.el().querySelector('.bg-color > select').selectedIndex = 0;
+      vjs.on(this.el().querySelector('.vjs-default-button'), 'click', vjs.bind(this, function() {
+        this.el().querySelector('.vjs-fg-color > select').selectedIndex = 0;
+        this.el().querySelector('.vjs-bg-color > select').selectedIndex = 0;
         this.el().querySelector('.window-color > select').selectedIndex = 0;
-        this.el().querySelector('.text-opacity > select').selectedIndex = 0;
-        this.el().querySelector('.bg-opacity > select').selectedIndex = 0;
-        this.el().querySelector('.window-opacity > select').selectedIndex = 0;
-        this.el().querySelector('.edge-style > select').selectedIndex = 0;
-        this.el().querySelector('.font-family > select').selectedIndex = 0;
+        this.el().querySelector('.vjs-text-opacity > select').selectedIndex = 0;
+        this.el().querySelector('.vjs-bg-opacity > select').selectedIndex = 0;
+        this.el().querySelector('.vjs-window-opacity > select').selectedIndex = 0;
+        this.el().querySelector('.vjs-edge-style select').selectedIndex = 0;
+        this.el().querySelector('.vjs-font-family select').selectedIndex = 0;
         this.fontSize = 12;
         this.updateDisplay();
       }));
@@ -34,20 +34,20 @@
         this.updateDisplay();
       }));
 
-      vjs.on(this.el().querySelector('.fg-color > select'), 'change', vjs.bind(this, this.updateDisplay));
-      vjs.on(this.el().querySelector('.bg-color > select'), 'change', vjs.bind(this, this.updateDisplay));
+      vjs.on(this.el().querySelector('.vjs-fg-color > select'), 'change', vjs.bind(this, this.updateDisplay));
+      vjs.on(this.el().querySelector('.vjs-bg-color > select'), 'change', vjs.bind(this, this.updateDisplay));
       vjs.on(this.el().querySelector('.window-color > select'), 'change', vjs.bind(this, this.updateDisplay));
-      vjs.on(this.el().querySelector('.text-opacity > select'), 'change', vjs.bind(this, this.updateDisplay));
-      vjs.on(this.el().querySelector('.bg-opacity > select'), 'change', vjs.bind(this, this.updateDisplay));
-      vjs.on(this.el().querySelector('.window-opacity > select'), 'change', vjs.bind(this, this.updateDisplay));
-      vjs.on(this.el().querySelector('.edge-style > select'), 'change', vjs.bind(this, this.updateDisplay));
-      vjs.on(this.el().querySelector('.font-family > select'), 'change', vjs.bind(this, this.updateDisplay));
+      vjs.on(this.el().querySelector('.vjs-text-opacity > select'), 'change', vjs.bind(this, this.updateDisplay));
+      vjs.on(this.el().querySelector('.vjs-bg-opacity > select'), 'change', vjs.bind(this, this.updateDisplay));
+      vjs.on(this.el().querySelector('.vjs-window-opacity > select'), 'change', vjs.bind(this, this.updateDisplay));
+      vjs.on(this.el().querySelector('.vjs-edge-style select'), 'change', vjs.bind(this, this.updateDisplay));
+      vjs.on(this.el().querySelector('.vjs-font-family select'), 'change', vjs.bind(this, this.updateDisplay));
     }
   });
 
   vjs.TextTrackSettings.prototype.createEl = function() {
     return vjs.Component.prototype.createEl.call(this, 'div', {
-      className: 'vjs-caption-settings',
+      className: 'vjs-caption-settings vjs-modal-overlay',
       innerHTML: captionOptionsMenuTemplate()
     });
   };
@@ -57,14 +57,14 @@
 
     el = this.el();
 
-    textEdge = getSelectedOptionValue(el.querySelector('.edge-style > select'));
-    fontFamily = getSelectedOptionValue(el.querySelector('.font-family > select'));
-    fgColor = getSelectedOptionValue(el.querySelector('.fg-color > select'));
-    textOpacity = getSelectedOptionValue(el.querySelector('.text-opacity > select'));
-    bgColor = getSelectedOptionValue(el.querySelector('.bg-color > select'));
-    bgOpacity = getSelectedOptionValue(el.querySelector('.bg-opacity > select'));
+    textEdge = getSelectedOptionValue(el.querySelector('.vjs-edge-style select'));
+    fontFamily = getSelectedOptionValue(el.querySelector('.vjs-font-family select'));
+    fgColor = getSelectedOptionValue(el.querySelector('.vjs-fg-color > select'));
+    textOpacity = getSelectedOptionValue(el.querySelector('.vjs-text-opacity > select'));
+    bgColor = getSelectedOptionValue(el.querySelector('.vjs-bg-color > select'));
+    bgOpacity = getSelectedOptionValue(el.querySelector('.vjs-bg-opacity > select'));
     windowColor = getSelectedOptionValue(el.querySelector('.window-color > select'));
-    windowOpacity = getSelectedOptionValue(el.querySelector('.window-opacity > select'));
+    windowOpacity = getSelectedOptionValue(el.querySelector('.vjs-window-opacity > select'));
 
     result = {
       'backgroundOpacity': bgOpacity,
@@ -88,9 +88,13 @@
   };
 
   vjs.TextTrackSettings.prototype.updateDisplay = function() {
-    vjs.obj.each(this.player().textTracks(), function(i, el) {
-      el.updateDisplay();
-    });
+    var i, textTracks;
+    textTracks = this.player().textTracks();
+    i = textTracks.length;
+
+    while (i--) {
+      textTracks[i].updateDisplay();
+    }
   };
 
   function getSelectedOptionValue(target) {
@@ -106,138 +110,82 @@
   }
 
   function captionOptionsMenuTemplate() {
-    return '<style>' +
-      '.vjs-caption-settings {' +
-        'position: relative;' +
-        'top: 10px;' +
-        'background-color: #000;' +
-        'opacity: 0.75;' +
-        'color: #FFF;' +
-        'margin: 0 auto;' +
-        'min-height: 170px;' +
-        'font-family: Arial, Helvetica, sans-serif;' +
-        'font-size: 12px; ' +
-        'width: 450px' +
-      '}' +
-
-      '.vjs-caption-settings .left {' +
-        'float: left' +
-      '}' +
-
-      '.vjs-caption-settings .right {' +
-        'float: right;' +
-      '}' +
-
-      '.vjs-caption-settings .clear, ' +
-      '.vjs-caption-settings .left:after,' +
-      '.vjs-caption-settings .right:after {' +
-        'clear: both;' +
-      '}' +
-
-      '.vjs-caption-settings .component {' +
-        'margin: 5px;' +
-        'padding: 3px;' +
-        'min-height: 40px;' +
-      '}' +
-
-      '.vjs-caption-settings .component > div {' +
-        'margin-bottom: 5px;' +
-        'min-height: 20px;' +
-      '}' +
-
-      '.vjs-caption-settings .component > div:last-child {' +
-        'margin-bottom: 0;' +
-        'padding-bottom: 0;' +
-        'min-height: 0;' +
-      '}' +
-
-      '.vjs-caption-settings label > input {' +
-        'margin-right: 10px;' +
-      '}' +
-
-      '.vjs-caption-settings input[type="button"] {' +
-        'width: 40px;' +
-        'height: 40px;' +
-      '}' +
-
-      '</style> \n' +
-      '<div class="caption-settings">' +
-        '<div>' +
-          '<div class="component left">' +
-            '<div class="fg-color">' +
-                '<span style="width:65px;display:block">Foreground</span>' +
+    return '<div class="vjs-tracksettings">' +
+        '<div class="vjs-tracksettings-colors">' +
+          '<div class="vjs-fg-color vjs-tracksetting">' +
+              '<label class="vjs-label">Foreground</label>' +
+              '<select>' +
+                '<option value="">---</option>' +
+                '<option value="#FFF">White</option>' +
+                '<option value="#000">Black</option>' +
+                '<option value="#F00">Red</option>' +
+                '<option value="#0F0">Green</option>' +
+                '<option value="#00F">Blue</option>' +
+                '<option value="#FF0">Yellow</option>' +
+                '<option value="#F0F">Magenta</option>' +
+                '<option value="#0FF">Cyan</option>' +
+              '</select>' +
+              '<span class="vjs-text-opacity vjs-opacity">' +
                 '<select>' +
                   '<option value="">---</option>' +
-                  '<option value="#FFF">White</option>' +
-                  '<option value="#000">Black</option>' +
-                  '<option value="#F00">Red</option>' +
-                  '<option value="#0F0">Green</option>' +
-                  '<option value="#00F">Blue</option>' +
-                  '<option value="#FF0">Yellow</option>' +
-                  '<option value="#F0F">Magenta</option>' +
-                  '<option value="#0FF">Cyan</option>' +
+                  '<option value="1">Opaque</option>' +
+                  '<option value="0.5">Semi-Opaque</option>' +
                 '</select>' +
-                '<div class="text-opacity" style="display:inline">' +
-                  '<select class="center">' +
+              '</span>' +
+          '</div>' + // vjs-fg-color
+          '<div class="vjs-bg-color vjs-tracksetting">' +
+              '<label class="vjs-label">Background</label>' +
+              '<select>' +
+                '<option value="">---</option>' +
+                '<option value="#FFF">White</option>' +
+                '<option value="#000">Black</option>' +
+                '<option value="#F00">Red</option>' +
+                '<option value="#0F0">Green</option>' +
+                '<option value="#00F">Blue</option>' +
+                '<option value="#FF0">Yellow</option>' +
+                '<option value="#F0F">Magenta</option>' +
+                '<option value="#0FF">Cyan</option>' +
+              '</select>' +
+              '<span class="vjs-bg-opacity vjs-opacity vjs-tracksetting">' +
+                  '<select>' +
                     '<option value="">---</option>' +
                     '<option value="1">Opaque</option>' +
-                    '<option value="0.5">Semi-Opaque</option>' +
+                    '<option value="0.5">Semi-Transparent</option>' +
+                    '<option value="0">Transparent</option>' +
                   '</select>' +
-                '</div>' +
-            '</div>' +
-            '<div class="bg-color">' +
-                '<span style="width:65px;display:block">Background</span>' +
-                '<select>' +
-                  '<option value="">---</option>' +
-                  '<option value="#FFF">White</option>' +
-                  '<option value="#000">Black</option>' +
-                  '<option value="#F00">Red</option>' +
-                  '<option value="#0F0">Green</option>' +
-                  '<option value="#00F">Blue</option>' +
-                  '<option value="#FF0">Yellow</option>' +
-                  '<option value="#F0F">Magenta</option>' +
-                  '<option value="#0FF">Cyan</option>' +
-                '</select>' +
-                '<div class="bg-opacity" style="display:inline">' +
-                    '<select class="center">' +
-                      '<option value="">---</option>' +
-                      '<option value="1">Opaque</option>' +
-                      '<option value="0.5">Semi-Transparent</option>' +
-                      '<option value="0">Transparent</option>' +
-                    '</select>' +
-                '</div>' +
-            '</div>' +
-            '<div class="window-color">' +
-                '<span style="width:65px;display:block">Window</span>' +
-                '<select>' +
-                  '<option value="">---</option>' +
-                  '<option value="#FFF">White</option>' +
-                  '<option value="#000">Black</option>' +
-                  '<option value="#F00">Red</option>' +
-                  '<option value="#0F0">Green</option>' +
-                  '<option value="#00F">Blue</option>' +
-                  '<option value="#FF0">Yellow</option>' +
-                  '<option value="#F0F">Magenta</option>' +
-                  '<option value="#0FF">Cyan</option>' +
-                '</select>' +
-                '<div class="window-opacity" style="display:inline">' +
-                    '<select class="center">' +
-                      '<option value="">---</option>' +
-                      '<option value="1">Opaque</option>' +
-                      '<option value="0.5">Semi-Transparent</option>' +
-                      '<option value="0">Transparent</option>' +
-                    '</select>' +
-                '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="component right">' +
-            '<div class="font-size">' +
-              '<span style="display:block">Font Size</span>' +
-              '<input type="button" name="font-size" class="font-minus" value="-"/>' +
-              '<input type="button" name="font-size" class="font-plus" value="+"/>' +
-            '</div>' +
-            '<div class="edge-style">' +
-              '<span style="display:block">Text Edge Style</span>' +
+              '</span>' +
+          '</div>' + // vjs-bg-color
+          '<div class="window-color vjs-tracksetting">' +
+              '<label class="vjs-label">Window</label>' +
+              '<select>' +
+                '<option value="">---</option>' +
+                '<option value="#FFF">White</option>' +
+                '<option value="#000">Black</option>' +
+                '<option value="#F00">Red</option>' +
+                '<option value="#0F0">Green</option>' +
+                '<option value="#00F">Blue</option>' +
+                '<option value="#FF0">Yellow</option>' +
+                '<option value="#F0F">Magenta</option>' +
+                '<option value="#0FF">Cyan</option>' +
+              '</select>' +
+              '<span class="vjs-window-opacity vjs-opacity">' +
+                  '<select>' +
+                    '<option value="">---</option>' +
+                    '<option value="1">Opaque</option>' +
+                    '<option value="0.5">Semi-Transparent</option>' +
+                    '<option value="0">Transparent</option>' +
+                  '</select>' +
+              '</span>' +
+          '</div>' + // vjs-window-color
+        '</div>' + // vjs-tracksettings
+        '<div class="vjs-tracksettings-font">' +
+          '<div class="font-size vjs-tracksetting">' +
+            '<label class="vjs-label">Font Size</label>' +
+            '<button name="font-size" class="font-minus">-</button>' +
+            '<button name="font-size" class="font-plus">+</button>' +
+          '</div>' + // vjs-font-size
+          '<div class="vjs-edge-style vjs-tracksetting">' +
+            '<label class="vjs-label">Text Edge Style' +
               '<select>' +
                 '<option value="none">None</option>' +
                 '<option value="raised">Raised</option>' +
@@ -245,11 +193,12 @@
                 '<option value="uniform">Uniform</option>' +
                 '<option value="dropshadow">Dropshadow</option>' +
               '</select>' +
-            '</div>' +
-            '<div class="font-family">' +
-              '<span style="display:block">Font Family</span>' +
+            '</label>' +
+          '</div>' + // vjs-edge-style
+          '<div class="vjs-font-family vjs-tracksetting">' +
+            '<label class="vjs-label">Font Family' +
               '<select>' +
-                '<option value="">---</option>' +
+                '<option value="">Default</option>' +
                 '<option value="monospaceSerif">Monospace Serif</option>' +
                 '<option value="proportionalSerif">Proportional Serif</option>' +
                 '<option value="monospaceSansSerif">Monospace Sans-Serif</option>' +
@@ -258,14 +207,14 @@
                 '<option value="script">Script</option>' +
                 '<option value="small-caps">Small Caps</option>' +
               '</select>' +
-            '</div>' +
-          '</div>' +
+            '</label>' +
+          '</div>' + // vjs-font-family
         '</div>' +
-        '<div class="component right">' +
-          '<button class="default-button">Defaults</button>' +
-          '<button class="done-button">Close</button>' +
-        '</div>' +
-    '</div>';
+      '</div>' +
+      '<div class="vjs-tracksettings-controls">' +
+        '<button class="vjs-default-button">Defaults</button>' +
+        '<button class="vjs-done-button">Close</button>' +
+      '</div>';
   }
 
 })();
