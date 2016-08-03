@@ -5,13 +5,13 @@ import TextTrackCueList from './text-track-cue-list';
 import * as Fn from '../utils/fn.js';
 import {TextTrackKind, TextTrackMode} from './track-enums';
 import log from '../utils/log.js';
-import document from 'global/document';
 import window from 'global/window';
 import Track from './track.js';
 import { isCrossOrigin } from '../utils/url.js';
 import XHR from 'xhr';
 import merge from '../utils/merge-options';
 import * as browser from '../utils/browser.js';
+import { srt2webvtt, isSrt } from './srt2webvtt.js';
 
 /**
  * takes a webvtt file contents and parses it into cues
@@ -41,13 +41,26 @@ const parseCues = function(srcContent, track) {
   };
 
   parser.parse(srcContent);
+
   if (errors.length > 0) {
-    if (console.groupCollapsed) {
-      console.groupCollapsed(`Text Track parsing errors for ${track.src}`);
-    }
-    errors.forEach((error) => log.error(error));
-    if (console.groupEnd) {
-      console.groupEnd();
+    // If WebVTT returns BadSignature (code=0), and no cues were created, check
+    //  if it is an SRT; if so, convert the track from SRT to WebVTT and re-parse
+    if (errors[0].code === 0 && track.cues.length === 0 &&
+        typeof isSrt === 'function' && isSrt(srcContent)) {
+      log('Converting .srt file to WebVTT, and re-parsing: ' +
+           track.src || (track.label + ', ' + track.language + ', ' + track.kind));
+      let convertedContent = srt2webvtt(srcContent);
+
+      // 'return' to make sure we don't flush this parser and trigger an extra loadeddata event
+      return parseCues(convertedContent, track);
+    } else {
+      if (console.groupCollapsed) {
+        console.groupCollapsed(`Text Track parsing errors for ${track.src}`);
+      }
+      errors.forEach((error) => log.error(error));
+      if (console.groupEnd) {
+        console.groupEnd();
+      }
     }
   }
 
