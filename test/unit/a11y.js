@@ -21,7 +21,7 @@ q.test('should have no a11y issues, using simple defaults', function(assert) {
   });
 
   axe.a11yCheck('#qunit-fixture', function(results) {
-    console.log(results);
+    console.log(JSON.stringify(results.violations, null, '  '));
     assert.equal(results.violations.length, 0, 'there are no a11y violations');
     done();
   });
