@@ -564,6 +564,8 @@ videojs.AudioTrack = AudioTrack;
  */
 videojs.VideoTrack = VideoTrack;
 
+videojs.Dom = Dom;
+
 /**
  * Determines, via duck typing, whether or not a value is a DOM element.
  *
@@ -718,6 +720,18 @@ videojs.appendContent = Dom.appendContent;
  * @return {Element}
  */
 videojs.insertContent = Dom.insertContent;
+
+/**
+ * Export the Dom utilities for use in external plugins
+ * and Tech's
+ */
+videojs.Dom = Dom;
+
+/**
+ * Export the Url utilities for use in external plugins
+ * and Tech's
+ */
+videojs.Url = Url;
 
 /*
  * Custom Universal Module Definition (UMD)
