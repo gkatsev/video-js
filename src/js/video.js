@@ -748,4 +748,7 @@ if (typeof define === 'function' && define.amd) {
   module.exports = videojs;
 }
 
+// require flash here so videojs will be partially built
+require('videojs-flash');
+
 export default videojs;
