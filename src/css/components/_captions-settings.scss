@@ -2,19 +2,23 @@
   background-color: $primary-background-color;
   background-color: rgba($primary-background-color, 0.75);
   color: $primary-foreground-color;
-  height: 66%;
+  height: 70%;
 }
 
 // Layout divs
+.vjs-text-track-settings .vjs-modal-dialog-content {
+  display: table;
+}
+
 .vjs-text-track-settings .vjs-track-settings-colors,
-.vjs-text-track-settings .vjs-track-settings-font {
-  float: left;
+.vjs-text-track-settings .vjs-track-settings-font,
+.vjs-text-track-settings .vjs-track-settings-controls {
+  display: table-cell;
 }
 
 .vjs-text-track-settings .vjs-track-settings-controls {
-  clear: both;
-  margin: 0 0 20px;
   text-align: right;
+  vertical-align: bottom;
 }
 
 // Form elements
