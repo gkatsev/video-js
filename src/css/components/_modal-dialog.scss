@@ -5,9 +5,8 @@
   // This allows scrolling of content if need be.
   overflow: auto;
 
-  // This fixes issues with old IE versions. If they include a scrollbar, they
-  // will mis-calculate the width, leaving a gap to the right of the scrollbar
-  // when the box-sizing is border-box.
+  // When combined with `overflow: auto;`, this fixes gaps left by
+  // scrollbars in older IE versions.
   box-sizing: content-box;
 }
 
