@@ -1181,15 +1181,15 @@ class Component {
 
     let touchHolding;
 
-    this.on('touchstart', function() {
-      report();
-      // For as long as the they are touching the device or have their mouse down,
-      // we consider them active even if they're not moving their finger or mouse.
-      // So we want to continue to update that they are active
-      this.clearInterval(touchHolding);
-      // report at the same interval as activityCheck
-      touchHolding = this.setInterval(report, 250);
-    });
+    // this.on('touchstart', function() {
+    //   report();
+    //   // For as long as the they are touching the device or have their mouse down,
+    //   // we consider them active even if they're not moving their finger or mouse.
+    //   // So we want to continue to update that they are active
+    //   this.clearInterval(touchHolding);
+    //   // report at the same interval as activityCheck
+    //   touchHolding = this.setInterval(report, 250);
+    // });
 
     const touchEnd = function(event) {
       report();

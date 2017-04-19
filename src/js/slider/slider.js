@@ -102,10 +102,10 @@ class Slider extends Component {
      */
     this.trigger('slideractive');
 
-    this.on(doc, 'mousemove', this.handleMouseMove);
-    this.on(doc, 'mouseup', this.handleMouseUp);
-    this.on(doc, 'touchmove', this.handleMouseMove);
-    this.on(doc, 'touchend', this.handleMouseUp);
+    // this.on(doc, 'mousemove', this.handleMouseMove);
+    // this.on(doc, 'mouseup', this.handleMouseUp);
+    // this.on(doc, 'touchmove', this.handleMouseMove);
+    // this.on(doc, 'touchend', this.handleMouseUp);
 
     this.handleMouseMove(event);
   }
@@ -198,11 +198,11 @@ class Slider extends Component {
     const style = bar.el().style;
 
     // Set the new bar width or height
-    if (this.vertical()) {
-      style.height = percentage;
-    } else {
-      style.width = percentage;
-    }
+    // if (this.vertical()) {
+    //   style.height = percentage;
+    // } else {
+    //   style.width = percentage;
+    // }
 
     return progress;
   }

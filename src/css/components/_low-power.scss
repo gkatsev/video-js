@@ -1,0 +1,21 @@
+.video-js:-webkit-full-screen,
+.video-js:-webkit-full-screen .vjs-tech {
+    background-color: #000000 !important;
+    overflow: visible !important;
+}
+
+:-webkit-full-screen-ancestor:not(:-webkit-full-screen-ancestor):not(:-webkit-full-screen) { display: none; }
+
+
+// .video-js:-webkit-full-screen > .vjs-modal-dialog.vjs-player-info-modal,
+// .video-js:-webkit-full-screen > .vjs-text-track-display,
+// .video-js:-webkit-full-screen > .vjs-big-play-button,
+// .video-js:-webkit-full-screen > .vjs-modal-dialog,
+// .video-js:-webkit-full-screen > .vjs-control-bar,
+// .video-js:-webkit-full-screen > .vjs-poster,
+// .video-js:-webkit-full-screen > .vjs-loading-spinner,
+// .video-js:-webkit-full-screen > .vjs-caption-settings {
+.video-js.vjs-low-power *:not(.vjs-tech) {
+    display: none !important;
+}
+

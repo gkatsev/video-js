@@ -90,10 +90,10 @@ class VolumeControl extends Component {
   handleMouseDown(event) {
     const doc = this.el_.ownerDocument;
 
-    this.on(doc, 'mousemove', this.throttledHandleMouseMove);
-    this.on(doc, 'touchmove', this.throttledHandleMouseMove);
-    this.on(doc, 'mouseup', this.handleMouseUp);
-    this.on(doc, 'touchend', this.handleMouseUp);
+    // this.on(doc, 'mousemove', this.throttledHandleMouseMove);
+    // this.on(doc, 'touchmove', this.throttledHandleMouseMove);
+    // this.on(doc, 'mouseup', this.handleMouseUp);
+    // this.on(doc, 'touchend', this.handleMouseUp);
   }
 
   /**

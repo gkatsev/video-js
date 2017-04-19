@@ -2026,6 +2026,17 @@ class Player extends Component {
        */
       this.trigger('fullscreenchange');
     }
+
+    // this.controlBar && this.controlBar.one('transitionend', () => {
+      this.el().className += ' vjs-low-power';
+
+      this.on('fullscreenchange', function() {
+        if (!this.isFullscreen()) {
+          this.el().className = this.el().className.replace('vjs-low-power', '');
+        }
+      });
+      console.log('we finished hiding!');
+    // });
   }
 
   /**
@@ -2035,6 +2046,8 @@ class Player extends Component {
    */
   exitFullscreen() {
     const fsApi = FullscreenApi;
+
+    this.el().className = this.el().className.replace('vjs-low-power', '');
 
     this.isFullscreen(false);
 
@@ -2748,10 +2761,10 @@ class Player extends Component {
           // When this gets resolved in ALL browsers it can be removed
           // https://code.google.com/p/chromium/issues/detail?id=103041
           if (this.tech_) {
-            this.tech_.one('mousemove', function(e) {
-              e.stopPropagation();
-              e.preventDefault();
-            });
+            // this.tech_.one('mousemove', function(e) {
+            //   e.stopPropagation();
+            //   e.preventDefault();
+            // });
           }
 
           this.removeClass('vjs-user-active');
@@ -2798,7 +2811,7 @@ class Player extends Component {
       // Setting userActivity=true now and setting the interval to the same time
       // as the activityCheck interval (250) should ensure we never miss the
       // next activityCheck
-      mouseInProgress = this.setInterval(handleActivity, 250);
+      // mouseInProgress = this.setInterval(handleActivity, 250);
     };
 
     const handleMouseUp = function(event) {
@@ -2808,9 +2821,9 @@ class Player extends Component {
     };
 
     // Any mouse movement will be considered user activity
-    this.on('mousedown', handleMouseDown);
-    this.on('mousemove', handleMouseMove);
-    this.on('mouseup', handleMouseUp);
+    // this.on('mousedown', handleMouseDown);
+    // this.on('mousemove', handleMouseMove);
+    // this.on('mouseup', handleMouseUp);
 
     // Listen for keyboard navigation
     // Shouldn't need to use inProgress interval because of key repeat
@@ -2824,34 +2837,34 @@ class Player extends Component {
     // http://ejohn.org/blog/learning-from-twitter/
     let inactivityTimeout;
 
-    this.setInterval(function() {
-      // Check to see if mouse/touch activity has happened
-      if (this.userActivity_) {
-        // Reset the activity tracker
-        this.userActivity_ = false;
-
-        // If the user state was inactive, set the state to active
-        this.userActive(true);
-
-        // Clear any existing inactivity timeout to start the timer over
-        this.clearTimeout(inactivityTimeout);
-
-        const timeout = this.options_.inactivityTimeout;
-
-        if (timeout > 0) {
-          // In <timeout> milliseconds, if no more activity has occurred the
-          // user will be considered inactive
-          inactivityTimeout = this.setTimeout(function() {
-            // Protect against the case where the inactivityTimeout can trigger just
-            // before the next user activity is picked up by the activity check loop
-            // causing a flicker
-            if (!this.userActivity_) {
-              this.userActive(false);
-            }
-          }, timeout);
-        }
-      }
-    }, 250);
+    // this.setInterval(function() {
+    //   // Check to see if mouse/touch activity has happened
+    //   if (this.userActivity_) {
+    //     // Reset the activity tracker
+    //     this.userActivity_ = false;
+    //
+    //     // If the user state was inactive, set the state to active
+    //     this.userActive(true);
+    //
+    //     // Clear any existing inactivity timeout to start the timer over
+    //     this.clearTimeout(inactivityTimeout);
+    //
+    //     const timeout = this.options_.inactivityTimeout;
+    //
+    //     if (timeout > 0) {
+    //       // In <timeout> milliseconds, if no more activity has occurred the
+    //       // user will be considered inactive
+    //       inactivityTimeout = this.setTimeout(function() {
+    //         // Protect against the case where the inactivityTimeout can trigger just
+    //         // before the next user activity is picked up by the activity check loop
+    //         // causing a flicker
+    //         if (!this.userActivity_) {
+    //           this.userActive(false);
+    //         }
+    //       }, timeout);
+    //     }
+    //   }
+    // }, 250);
   }
 
   /**

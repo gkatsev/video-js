@@ -79,7 +79,7 @@ class TimeTooltip extends Component {
     }
 
     this.el_.style.right = `-${pullTooltipBy}px`;
-    Dom.textContent(this.el_, content);
+    // Dom.textContent(this.el_, content);
   }
 }
 

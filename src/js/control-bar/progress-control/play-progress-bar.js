@@ -46,18 +46,18 @@ class PlayProgressBar extends Component {
       this.cancelAnimationFrame(this.rafId_);
     }
 
-    this.rafId_ = this.requestAnimationFrame(() => {
-      const time = (this.player_.scrubbing()) ?
-        this.player_.getCache().currentTime :
-        this.player_.currentTime();
-
-      const content = formatTime(time, this.player_.duration());
-      const timeTooltip = this.getChild('timeTooltip');
-
-      if (timeTooltip) {
-        timeTooltip.update(seekBarRect, seekBarPoint, content);
-      }
-    });
+    // this.rafId_ = this.requestAnimationFrame(() => {
+    //   const time = (this.player_.scrubbing()) ?
+    //     this.player_.getCache().currentTime :
+    //     this.player_.currentTime();
+    //
+    //   const content = formatTime(time, this.player_.duration());
+    //   const timeTooltip = this.getChild('timeTooltip');
+    //
+    //   if (timeTooltip) {
+    //     timeTooltip.update(seekBarRect, seekBarPoint, content);
+    //   }
+    // });
   }
 }
 

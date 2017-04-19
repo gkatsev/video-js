@@ -35,7 +35,7 @@ class SeekBar extends Slider {
   constructor(player, options) {
     super(player, options);
     this.update = Fn.throttle(Fn.bind(this, this.update), 50);
-    this.on(player, ['timeupdate', 'ended'], this.update);
+    // this.on(player, ['timeupdate', 'ended'], this.update);
   }
 
   /**

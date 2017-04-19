@@ -484,6 +484,7 @@ export function unblockTextSelection() {
  *         Always returns a plain
  */
 export function getBoundingClientRect(el) {
+  return;
   if (el && el.getBoundingClientRect && el.parentNode) {
     const rect = el.getBoundingClientRect();
     const result = {};

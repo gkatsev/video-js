@@ -27,7 +27,7 @@ class ProgressControl extends Component {
   constructor(player, options) {
     super(player, options);
     this.handleMouseMove = throttle(bind(this, this.handleMouseMove), 25);
-    this.on(this.el_, 'mousemove', this.handleMouseMove);
+    // this.on(this.el_, 'mousemove', this.handleMouseMove);
 
     this.throttledHandleMouseSeek = throttle(bind(this, this.handleMouseSeek), 25);
     this.on(['mousedown', 'touchstart'], this.handleMouseDown);
@@ -55,6 +55,7 @@ class ProgressControl extends Component {
    * @listen mousemove
    */
   handleMouseMove(event) {
+    return;
     const seekBar = this.getChild('seekBar');
     const mouseTimeDisplay = seekBar.getChild('mouseTimeDisplay');
     const seekBarEl = seekBar.el();
@@ -113,10 +114,10 @@ class ProgressControl extends Component {
   handleMouseDown(event) {
     const doc = this.el_.ownerDocument;
 
-    this.on(doc, 'mousemove', this.throttledHandleMouseSeek);
-    this.on(doc, 'touchmove', this.throttledHandleMouseSeek);
-    this.on(doc, 'mouseup', this.handleMouseUp);
-    this.on(doc, 'touchend', this.handleMouseUp);
+    // this.on(doc, 'mousemove', this.throttledHandleMouseSeek);
+    // this.on(doc, 'touchmove', this.throttledHandleMouseSeek);
+    // this.on(doc, 'mouseup', this.handleMouseUp);
+    // this.on(doc, 'touchend', this.handleMouseUp);
   }
 
   /**

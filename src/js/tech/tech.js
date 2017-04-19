@@ -197,27 +197,27 @@ class Tech extends Component {
    */
   trackProgress(event) {
     this.stopTrackingProgress();
-    this.progressInterval = this.setInterval(Fn.bind(this, function() {
-      // Don't trigger unless buffered amount is greater than last time
-
-      const numBufferedPercent = this.bufferedPercent();
-
-      if (this.bufferedPercent_ !== numBufferedPercent) {
-        /**
-         * See {@link Player#progress}
-         *
-         * @event Tech#progress
-         * @type {EventTarget~Event}
-         */
-        this.trigger('progress');
-      }
-
-      this.bufferedPercent_ = numBufferedPercent;
-
-      if (numBufferedPercent === 1) {
-        this.stopTrackingProgress();
-      }
-    }), 500);
+    // this.progressInterval = this.setInterval(Fn.bind(this, function() {
+    //   // Don't trigger unless buffered amount is greater than last time
+    //
+    //   const numBufferedPercent = this.bufferedPercent();
+    //
+    //   if (this.bufferedPercent_ !== numBufferedPercent) {
+    //     #<{(|*
+    //      * See {@link Player#progress}
+    //      *
+    //      * @event Tech#progress
+    //      * @type {EventTarget~Event}
+    //      |)}>#
+    //     this.trigger('progress');
+    //   }
+    //
+    //   this.bufferedPercent_ = numBufferedPercent;
+    //
+    //   if (numBufferedPercent === 1) {
+    //     this.stopTrackingProgress();
+    //   }
+    // }), 500);
   }
 
   /**
@@ -299,17 +299,17 @@ class Tech extends Component {
     if (this.currentTimeInterval) {
       this.stopTrackingCurrentTime();
     }
-    this.currentTimeInterval = this.setInterval(function() {
-      /**
-       * Triggered at an interval of 250ms to indicated that time is passing in the video.
-       *
-       * @event Tech#timeupdate
-       * @type {EventTarget~Event}
-       */
-      this.trigger({ type: 'timeupdate', target: this, manuallyTriggered: true });
-
-    // 42 = 24 fps // 250 is what Webkit uses // FF uses 15
-    }, 250);
+    // this.currentTimeInterval = this.setInterval(function() {
+    //   #<{(|*
+    //    * Triggered at an interval of 250ms to indicated that time is passing in the video.
+    //    *
+    //    * @event Tech#timeupdate
+    //    * @type {EventTarget~Event}
+    //    |)}>#
+    //   this.trigger({ type: 'timeupdate', target: this, manuallyTriggered: true });
+    //
+    // // 42 = 24 fps // 250 is what Webkit uses // FF uses 15
+    // }, 250);
   }
 
   /**
